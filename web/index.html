@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Alpha</title>
+        <link rel="stylesheet" href="static/swiper-bundle.css">
+        <link rel="stylesheet" href="index-styles.css">
+        <script type="text/javascript" src="index-scripts.js"></script>
+        <script type="text/javascript" src="static/swiper-bundle.js"></script>
+        <script type="text/javascript" src="/eel.js"></script>
+        <script type="text/javascript">
+            eel.expose(Alert)
+            function Alert(content) {
+                alert('An error occured : '+content);
+            }
+
+            eel.expose(updateAlbumProgressBar)
+            function updateAlbumProgressBar(albumName, percentage) {
+                const progressBar = document.getElementById(`progress-${albumName}`);
+                if (progressBar) {
+                    progressBar.style.opacity = 1;
+                    const progress = progressBar.querySelector('.progress');
+                    progress.style.width = `${percentage}%`;
+                }
+                if (percentage >= 100) {
+                    setTimeout(() => {
+                        progressBar.style.opacity = 0;
+                    }, 500);
+                }
+                if (percentage >= 0) {
+                    progressBar.style.opacity = 1;
+                }
+            }
+
+            eel.expose(removeCancelIcon)
+            function removeCancelIcon(albumName) {
+                let button = document.getElementById(`download-${albumName}`);
+                setSyncIcon(albumName, 'sync');
+            }
+        </script>
+    </head>
+    <body class="dark-theme">
+        <div id="container">
+            <div class="navigation">
+                <div class="title-section">
+                    <h1>iCloud Album Manager</h1>
+                </div>
+                <div class="top-section">
+                    <div class="info-field">
+                        <p class="field-name" id="name-field">Name</p>
+                        <p class="field-value" id="name-value"></p>
+                    </div>
+                    <div class="info-field">
+                        <p class="field-name" id="on-disk-field">On disk</p>
+                        <p class="field-value" id="on-disk-value"></p>
+                    </div>
+                    <div class="info-field">
+                        <p class="field-name" id="path-field">Path</p>
+                        <p class="field-value" id="path-value"></p>
+                    </div>
+                    <div class="info-field">
+                        <p class="field-name" id="photos-num-field">Photos</p>
+                        <p class="field-value" id="photos-num-value"></p>
+                    </div>
+                </div>
+                <div class="bottom-section">
+                    <div id="bottom-vertical">
+                        <div id="toggle-switch">
+                            <label id="label-switch">
+                                <input type = "checkbox" onclick="toggleTheme()">
+                                <span id="slider" type="slider"></span>
+                            </label>
+                        </div>
+                        <button class="nav-button" id="change-language-button" onclick="changeLanguage()">FR</button>
+                    </div>
+                    <button class="nav-button" id="set-dd-button" onclick="setDownloadDir()">Set the main directory</button>
+                    <button class="nav-button" id="log-out-button" onclick="logOut()">Log out</button>
+                </div>
+            </div>
+            <div class = "content">
+                <div class = "swiper-container">
+                    <div class="swiper">
+                        <div class="swiper-wrapper"></div>
+                    </div>
+                    <div class="swiper-pagination"></div>
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
