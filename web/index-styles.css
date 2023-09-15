@@ -1,4 +1,4 @@
-/* region Themes */
+/* #region Themes */
 .dark-theme{
     --font-color : #f5f5f5;
     --accent-color : #38d8a3;
@@ -8,15 +8,15 @@
 }
 
 .light-theme{
-    --font-color : #1a1a1a;
-    --accent-color : #38d8a3;
-    --primary-color : #f5f5f5;
-    --secondary-color : #e6e6e6;
-    --tertiary-color : #cccccc;
+    --font-color : #333333;
+    --accent-color : #95721f;
+    --primary-color : #ffffff;
+    --secondary-color : #fdf8ea;
+    --tertiary-color : #ccd5ae;
 }
-/* endregion */
+/* #endregion */
 
-/* region General */
+/* #region General */
 body, html{
     --toggle-switch-delay: 0.3s;
     background-color: var(--primary-color);
@@ -36,9 +36,9 @@ body, html{
     height: 100vh;
     width: 100vw;
 }
-/* endregion */
+/* #endregion */
 
-/* region Navigation */
+/* #region Navigation */
 .navigation {
     background-color: var(--primary-color);
     color: var(--font-color);
@@ -163,7 +163,7 @@ body, html{
     cursor: pointer;
 }
 
-input {
+#input-switch {
     position: absolute;
     display: none;
 }
@@ -176,7 +176,7 @@ input {
     transition: transform var(--toggle-switch-delay) ease, background-color var(--toggle-switch-delay) ease;
 }
 
-input:checked ~ #slider {
+#input-switch:checked ~ #slider {
     background-color: var(--secondary-color);
 }
 
@@ -193,12 +193,12 @@ input:checked ~ #slider {
     transition: transform var(--toggle-switch-delay) ease, background-color var(--toggle-switch-delay) ease;
 }
 
-input:checked ~ #slider:before {
+#input-switch:checked ~ #slider:before {
     transform: translateX(5.938em);
     background-color: var(--accent-color);
     box-shadow: none;
 }
-/* endregion */
+/* #endregion */
 
 /* region Content */
 .content{

@@ -2,6 +2,25 @@ let swiper;
 let albums;
 let currentLanguage = 'en';
 
+document.addEventListener('DOMContentLoaded', function () {
+    // set the event listeners
+    document.getElementById('change-language-button').addEventListener('click', changeLanguage);
+    document.getElementById('input-switch').addEventListener('click', toggleTheme);
+    document.getElementById('log-out-button').addEventListener('click', logOut);
+    document.getElementById('set-dd-button').addEventListener('click', setDownloadDir);
+
+    // get the albums infos and generate the swiper
+    eel.get_albums_infos()(function (data) {
+        albums = data;
+        generateSwiper(albums);
+    });
+
+    // set the language
+    updateContentLanguage(currentLanguage);
+    eel._init();
+    setSavedTheme();
+});
+
 // languages
 const languages = {
     en: {
@@ -205,7 +224,19 @@ function toggleTheme() {
         body.classList.remove('light-theme');
         body.classList.add('dark-theme');
     }
+    localStorage.setItem('theme', body.classList);
 }
+
+// set the saved theme
+function setSavedTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    const themeCheckbox = document.getElementById('input-switch');
+    if (savedTheme) {
+      if (savedTheme==='light-theme') {
+        themeCheckbox.click();
+      }
+    }
+  }
 
 // log out
 function logOut() {
@@ -253,12 +284,3 @@ function setDownloadDir() {
     console.log('[index-scripts.js] called app.set_download_directory');
     eel.set_download_directory();
 }
-
-document.addEventListener('DOMContentLoaded', function () {
-    eel.get_albums_infos()(function (data) {
-        albums = data;
-        generateSwiper(albums);
-    });
-    updateContentLanguage(currentLanguage);
-    eel._init();
-});

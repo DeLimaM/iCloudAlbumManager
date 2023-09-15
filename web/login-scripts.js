@@ -10,7 +10,24 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     document.getElementById('remember-me').addEventListener('change', rememberMe);
+    document.getElementById('login').addEventListener('click', handleLogIn);
+    document.getElementById('input-switch').addEventListener('click', toggleTheme)
+
+    setSavedTheme();
 });
+
+// toggle the theme
+function toggleTheme() {
+    let body = document.querySelector('body');
+    if (body.classList.contains('dark-theme')) {
+        body.classList.remove('dark-theme');
+        body.classList.add('light-theme');
+    } else {
+        body.classList.remove('light-theme');
+        body.classList.add('dark-theme');
+    }
+    localStorage.setItem('theme', body.classList);
+}
 
 async function handleLogIn() {
     /* Handle the login button click */
@@ -38,3 +55,14 @@ function rememberMe() {
         localStorage.removeItem('password');
     }
 }
+
+// set the saved theme
+function setSavedTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    const themeCheckbox = document.getElementById('input-switch');
+    if (savedTheme) {
+      if (savedTheme==='light-theme') {
+        themeCheckbox.click();
+      }
+    }
+  }
