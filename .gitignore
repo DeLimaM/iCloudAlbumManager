@@ -10,10 +10,10 @@ __pycache__/
 
 # Distribution / packaging
 .Python
-*.env
 *.json
 cookies/
 env/
+.idea/
 build/
 develop-eggs/
 dist/
@@ -81,7 +81,7 @@ target/
 celerybeat-schedule
 
 # dotenv
-.env
+*.env
 
 # virtualenv
 venv/
