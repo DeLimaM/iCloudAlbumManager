@@ -1,6 +1,9 @@
+import Icon from './icon.js';
+
 let swiper;
 let albums;
 let currentLanguage = 'en';
+const buttonIdToIconMap = {};
 
 document.addEventListener('DOMContentLoaded', function () {
     // set the event listeners
@@ -82,11 +85,18 @@ function generateSwiper(albums) {
         downloadButton.classList.add('context-button', 'download-button');
         downloadButton.id = `download-${key}`;
         contextMenu.appendChild(downloadButton);
+        let icon = new Icon(`download-${key}`);
+        buttonIdToIconMap[`download-${key}`] = icon;
+        console.log(buttonIdToIconMap);
 
         if (value['is_on_disk']) {
-            setSyncIcon(key);
+            icon.sync();
         } else {
-            setDownloadIcon(key);
+            icon.download();
+        }
+
+        downloadButton.onclick = () => {
+            syncAlbum(key)
         }
 
         // delete button
@@ -143,32 +153,6 @@ function generateSwiper(albums) {
     });
 }
 
-function setDownloadIcon(albumName) {
-    let downloadButton = document.getElementById(`download-${albumName}`);
-    downloadButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16"> <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/> <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/> </svg>';
-    downloadButton.onclick = () => {
-        albums[albumName]['is_on_disk'] = false;
-        syncAlbum(albumName);
-    }
-}
-
-function setSyncIcon(albumName) {
-    let downloadButton = document.getElementById(`download-${albumName}`);
-    downloadButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"> <path fill="var(--ci-primary-color, currentColor)" d="M410.168,133.046,381.21,104.088,464.017,104l-.034-32L328,72.144V208h32V128.132l27.541,27.541A152.5,152.5,0,0,1,279.972,416l.056,32a184.5,184.5,0,0,0,130.14-314.954Z" class="ci-primary"/> <path fill="var(--ci-primary-color, currentColor)" d="M232.028,104l-.056-32a184.5,184.5,0,0,0-130.14,314.954L130.878,416H48v32H184V312H152v79.868l-27.541-27.541A152.5,152.5,0,0,1,232.028,104Z" class="ci-primary"/> </svg>';
-    downloadButton.onclick = () => {
-        syncAlbum(albumName);
-        albums[albumName]['is_on_disk'] = true;
-    }
-}
-
-function setCancelIcon(buttonType, albumName) {
-    let button = document.getElementById(`${buttonType}-${albumName}`);
-    button.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-stop-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/> <path d="M5 6.5A1.5 1.5 0 0 1 6.5 5h3A1.5 1.5 0 0 1 11 6.5v3A1.5 1.5 0 0 1 9.5 11h-3A1.5 1.5 0 0 1 5 9.5v-3z"/> </svg>';
-    button.onclick = () => {
-        cancelDownload(albumName);
-    }
-}
-
 function disableDeleteButton(albumName) {
     let deleteButton = document.getElementById(`delete-${albumName}`);
     deleteButton.onclick = null;
@@ -179,12 +163,18 @@ function enableDeleteButton(albumName) {
     let deleteButton = document.getElementById(`delete-${albumName}`);
     deleteButton.onclick = () => {
         eel.delete_album(albumName)(function () {
-            setDownloadIcon(albumName);
-            albums[albumName]['is_on_disk'] = false;
-            updateAlbumInfos(albumName)
+            deleteAlbum(albumName);
         });
     }
     deleteButton.classList.remove('disabled');
+}
+
+function deleteAlbum(albumName) {
+    eel.delete_album(albumName)(function () {
+        setDownloadIcon(albumName);
+        albums[albumName]['is_on_disk'] = false;
+        updateAlbumInfos(albumName)
+    });
 }
 
 // change the language
@@ -255,9 +245,9 @@ function cancelDownload(albumName) {
     eel.cancel_download(albumName)(function () {
         eel.is_on_disk(albumName)(function (isOnDisk) {
             if (isOnDisk) {
-                setSyncIcon(albumName);
+                buttonIdToIconMap[`download-${albumName}`].sync();
             } else {
-                setDownloadIcon(albumName);
+                buttonIdToIconMap[`download-${albumName}`].download();
             }
         });
     });
@@ -267,12 +257,11 @@ function cancelDownload(albumName) {
 // sync an album
 function syncAlbum(albumName) {
     disableDeleteButton(albumName);
-    let downloadButton = document.getElementById(`download-${albumName}`);
-    setCancelIcon('download', albumName);
-    eel.sync_album(albumName)(function () {
-        setSyncIcon(albumName);
-        enableDeleteButton(albumName);
-    });
+    buttonIdToIconMap[`download-${albumName}`].cancel();
+    document.getElementById(`download-${albumName}`).onclick = () => {
+        cancelDownload(albumName);
+    }
+    eel.sync_album(albumName);
     eel.load_albums()(function (data) {
         albums = data;
         updateAlbumInfos(albumName);
@@ -283,4 +272,36 @@ function syncAlbum(albumName) {
 function setDownloadDir() {
     console.log('[index-scripts.js] called app.set_download_directory');
     eel.set_download_directory();
+}
+
+eel.expose(updateAlbumProgressBar)
+function updateAlbumProgressBar(albumName, percentage) {
+    const progressBar = document.getElementById(`progress-${albumName}`);
+    if (progressBar) {
+        progressBar.style.opacity = 1;
+        const progress = progressBar.querySelector('.progress');
+        progress.style.width = `${percentage}%`;
+    }
+    if (percentage >= 100) {
+        setTimeout(() => {
+            progressBar.style.opacity = 0;
+        }, 500);
+    }
+    if (percentage >= 0) {
+        progressBar.style.opacity = 1;
+    }
+}
+
+eel.expose(Alert)
+function Alert(content) {
+    alert('An error occured : '+content);
+}
+
+eel.expose(endOfSync)
+function endOfSync(albumName) {
+    document.getElementById(`download-${albumName}`).onclick = () => {
+        syncAlbum(albumName);
+    }
+    buttonIdToIconMap[`download-${albumName}`].sync();
+    enableDeleteButton(albumName);
 }

@@ -148,8 +148,8 @@ class ICloudAlbumSync:
             count += 1
             eel.updateAlbumProgressBar(album_name, count*100/num_photos)
         print(f"[main.py] download_album : Download of album '{album_name}' completed.")
-        eel.removeCancelIcon(album_name)
         self.cleanup_download(album_name)
+        eel.endOfSync(album_name)
 
     @staticmethod
     def download_photo(photo, download_path: str) -> None:

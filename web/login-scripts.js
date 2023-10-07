@@ -1,3 +1,5 @@
+var loggingIn = false;
+
 document.addEventListener('DOMContentLoaded', function () {
     const savedUsername = localStorage.getItem('username');
     const savedPassword = localStorage.getItem('password');
@@ -34,10 +36,16 @@ async function handleLogIn() {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
 
+    if (loggingIn) {
+        alert("Already logging in...");
+        return;
+    }
     if (username === "" || password === "") {
         alert("Please fill in all the fields");
     } else {
+
         document.getElementById('login').value = "Logging in...";
+        loggingIn = true;
         await eel.log_in(username, password)();
     }
 }

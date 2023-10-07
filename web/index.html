@@ -5,39 +5,9 @@
         <title>Alpha</title>
         <link rel="stylesheet" href="static/swiper-bundle.css">
         <link rel="stylesheet" href="index-styles.css">
-        <script type="text/javascript" src="index-scripts.js"></script>
+        <script type="module" src="index-scripts.js"></script>
         <script type="text/javascript" src="static/swiper-bundle.js"></script>
         <script type="text/javascript" src="/eel.js"></script>
-        <script type="text/javascript">
-            eel.expose(Alert)
-            function Alert(content) {
-                alert('An error occured : '+content);
-            }
-
-            eel.expose(updateAlbumProgressBar)
-            function updateAlbumProgressBar(albumName, percentage) {
-                const progressBar = document.getElementById(`progress-${albumName}`);
-                if (progressBar) {
-                    progressBar.style.opacity = 1;
-                    const progress = progressBar.querySelector('.progress');
-                    progress.style.width = `${percentage}%`;
-                }
-                if (percentage >= 100) {
-                    setTimeout(() => {
-                        progressBar.style.opacity = 0;
-                    }, 500);
-                }
-                if (percentage >= 0) {
-                    progressBar.style.opacity = 1;
-                }
-            }
-
-            eel.expose(removeCancelIcon)
-            function removeCancelIcon(albumName) {
-                let button = document.getElementById(`download-${albumName}`);
-                setSyncIcon(albumName, 'sync');
-            }
-        </script>
     </head>
     <body class="dark-theme">
         <div id="container">

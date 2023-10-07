@@ -1,14 +1,16 @@
+import os
 import tkinter as tk
 from tkinter.filedialog import askdirectory
 import eel
 from main import ICloudAlbumSync
 import threading
+import dotenv
 
 # for development purposes
 isOffline = False
 fake_albums_names = [str(i) for i in range(100)]
 
-eel.init('web')
+eel.init('web', allowed_extensions=['.js', '.html'])
 
 global api
 try:
@@ -33,6 +35,9 @@ def load_albums():
 @eel.expose
 def log_in(username, password):
     try:
+        dotenv.load_dotenv("login.env")
+        username = os.getenv("ID")
+        password = os.getenv("PASSWORD")
         if not isOffline:
             eel.spawn(api.log_in, username, password)
     except Exception as e:
