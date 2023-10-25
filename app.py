@@ -1,9 +1,12 @@
 from flask import Flask, render_template, request
-import pyicloud
+from ICloudAlbumManager import ICloudAlbumManager
 
 app = Flask(__name__)
-api = None
 
+albumManager = ICloudAlbumManager()
+
+
+# --------------------------------- Routes ---------------------------------
 
 @app.route('/')
 def root():
@@ -15,19 +18,16 @@ def login():
     username = request.form['username']
     password = request.form['password']
     try:
-        global api # This is a bad idea, but I'm lazy and this is a small project
-        api = pyicloud.PyiCloudService(username, password, cookie_directory='cookies')
-        if api.requires_2fa:
+        requires_2fa = albumManager.login(username, password)
+        if requires_2fa:
             print("Two-factor authentication required.")
             return render_template('2fa.html')
         else:
-            if not api.is_trusted_session:
-                print("Trusting session...")
-                api.trust_session()
+            check_trust()
             print(f"Logged in successfully as {username}")
-            return render_template('index.html', albums=api.photos.albums)
+            return render_template('index.html', albums=albumManager.get_albums)
     except Exception as e:
-        print(f"Failed to log in as {username} due to {e}")
+        print(f"Failed to log in as {username} due to {e} in {__name__}")
         return render_template('login.html')
 
 
@@ -35,11 +35,9 @@ def login():
 def two_factor():
     code = request.form['code']
     try:
-        result = api.validate_2fa_code(code)
+        result = albumManager.validate_2fa_code(code)
         if result:
-            if not api.is_trusted_session:
-                print("Trusting session...")
-                api.trust_session()
+            check_trust()
             print("Two-factor authentication succeeded!")
             return render_template('index.html')
         else:
@@ -50,10 +48,15 @@ def two_factor():
         return render_template('login.html')
 
 
-@app.route('/index')
-def index():
-    return render_template('index.html', albums=api.photos.albums)
+# --------------------------------- Helpers ---------------------------------
 
+def check_trust():
+    if not albumManager.is_trusted_session:
+        print("Trusting session...")
+        albumManager.trust_session()
+
+
+# --------------------------------- Main ---------------------------------
 
 if __name__ == '__main__':
     app.run(debug=True)

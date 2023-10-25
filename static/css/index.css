@@ -16,10 +16,12 @@
 }
 /* #endregion */
 
+/* #region fonts */
 @font-face {
     font-family: 'Lexend Exa';
     src: url('../fonts/LexendExa.ttf')
 }
+/* #endregion */
 
 body {
     color: var(--color-font);

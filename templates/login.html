@@ -3,12 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
+    <link rel="stylesheet" href="../static/css/login.css">
 </head>
-<body>
-<form action="/login" method="post">
-    <input type="text" name="username" placeholder="username">
-    <input type="password" name="password" placeholder="password">
-    <button type="submit">Login</button>
-</form>
+<body class="dark-theme">
+    <form action="/login" method="post">
+        <label>
+            <input type="text" name="username" placeholder="username">
+        </label>
+        <label>
+            <input type="password" name="password" placeholder="password">
+        </label>
+        <button type="submit">Login</button>
+    </form>
 </body>
 </html>
