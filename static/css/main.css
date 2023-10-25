@@ -1,0 +1,64 @@
+/* #region themes */
+.dark-theme {
+    --color-primary: #1a1a1a;
+    --color-secondary: #333333;
+    --color-tertiary: #263d3d;
+    --color-accent: #38d8a3;
+    --color-font: #F5F5F5;
+}
+
+.light-theme {
+    --color-primary: #FFFFFF;
+    --color-secondary: #fdf8ea;
+    --color-tertiary: #CCD5AE;
+    --color-accent: #95721f;
+    --color-font: #333333;
+}
+/* #endregion */
+
+@font-face {
+    font-family: 'Lexend Exa';
+    src: url('../fonts/LexendExa.ttf')
+}
+
+body {
+    color: var(--color-font);
+    background: var(--color-secondary);
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    font-family: "Lexend Exa", sans-serif;
+}
+
+#toolbar {
+    flex: 1;
+    border : 3px solid var(--color-accent);
+    border-radius: 5px;
+    background: var(--color-primary);
+    margin: 0;
+    padding: 0;
+}
+
+#content {
+    flex: 4;
+    background: var(--color-secondary);
+    margin: 0;
+    padding: 0;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    text-align: center;
+    padding: 8px;
+    border-bottom: 5px solid var(--color-tertiary);
+}
+
+th {
+    color: var(--color-accent);
+}

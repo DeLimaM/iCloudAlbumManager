@@ -3,8 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <title>Index</title>
+    <link rel="stylesheet" href="../static/css/main.css">
 </head>
-<body>
-    <h1>Index</h1>
+<body class="dark-theme">
+    <div id="toolbar">
+    </div>
+    <div id="content">
+        <table>
+            <tr>
+                <th>Album</th>
+                <th>Nombre de photos</th>
+            </tr>
+            {% for album in albums %}
+            <tr>
+                <td>{{ album }}</td>
+                <td>{{ albums[album]|length }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
 </body>
 </html>

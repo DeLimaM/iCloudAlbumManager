@@ -24,10 +24,10 @@ def login():
             if not api.is_trusted_session:
                 print("Trusting session...")
                 api.trust_session()
-            print("Logged in successfully as %s" % username)
-            return render_template('index.html')
+            print(f"Logged in successfully as {username}")
+            return render_template('index.html', albums=api.photos.albums)
     except Exception as e:
-        print("Failed to log in as %s" % username)
+        print(f"Failed to log in as {username} due to {e}")
         return render_template('login.html')
 
 
@@ -46,9 +46,14 @@ def two_factor():
             print("Two-factor authentication failed!")
             return render_template('login.html')
     except Exception as e:
-        print("Two-factor authentication failed!")
+        print(f"Two-factor authentication failed because of {e}")
         return render_template('login.html')
 
 
+@app.route('/index')
+def index():
+    return render_template('index.html', albums=api.photos.albums)
+
+
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
