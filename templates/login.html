@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Login</title>
     <link rel="stylesheet" href="../static/css/login.css">
+    <script src="../static/js/login.js"></script>
 </head>
 <body class="dark-theme">
     <form action="/login" method="post">
@@ -12,12 +13,12 @@
             Log in with your iCloud credentials
         </p>
         <label>
-            <input type="text" name="username" placeholder="username" autofocus>
+            <input type="text" name="username" placeholder="Username" autofocus>
         </label>
         <label>
-            <input type="password" name="password" placeholder="password">
+            <input type="password" name="password" placeholder="Password">
         </label>
-        <button type="submit">Login</button>
+        <button id="submit">Log in</button>
     </form>
 </body>
 </html>

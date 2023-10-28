@@ -2,32 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Index</title>
     <link rel="stylesheet" href="../static/css/index.css">
     <script type="text/javascript" src="../static/js/index.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body class="dark-theme">
     <div id = "loading">
         <div id="loading-content">
-            <div id="loading-text">Chargement...</div>
+            <div id="loading-text">Loading albums</div>
+            <div id="loading-spinner"><i class="fa-solid fa-circle-notch fa-spin"></i></div>
         </div>
     </div>
     <div id ="loaded">
         <div id="toolbar">
         </div>
         <div id="content">
-            <table>
-                <tr>
-                    <th>Album</th>
-                    <th>Nombre de photos</th>
-                </tr>
-                {% for album in albums %}
-                    <tr>
-                        <td>{{ album }}</td>
-                        <td>{{ albums[album]|length }}</td>
-                    </tr>
-                {% endfor %}
+            <table id="table">
             </table>
         </div>
     </div>

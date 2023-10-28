@@ -18,4 +18,4 @@ class PhotoAlbum:
 
     # ----------- Methods -----------
     def to_dict(self):
-        return {'name': self._name, 'photos': self._photos_number}
+        return {'photo_count': self._photos_number}

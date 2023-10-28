@@ -10,17 +10,17 @@ albumManager = ICloudAlbumManager()
 
 @app.route('/')
 def root():
+    print(f"route : {request.path}")
     return redirect(url_for('login'))
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    print(f"route : {request.path}")
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
         try:
-            if albumManager.is_logged_in:
-                albumManager.log_out()
             requires_2fa = albumManager.login(username, password)
             if requires_2fa:
                 print("Two-factor authentication required.")
@@ -38,6 +38,7 @@ def login():
 
 @app.route('/2fa', methods=['GET', 'POST'])
 def two_factor():
+    print(f"route : {request.path}")
     if request.method == 'POST':
         code = request.form['code']
         try:
@@ -56,19 +57,22 @@ def two_factor():
         return render_template('2fa.html')
 
 
+@app.route('/load_albums', methods=['GET'])
+def load_albums():
+    print(f"route : {request.path}")
+    if not albumManager.is_logged_in:
+        return jsonify({'error': 'Not logged in'})
+    albumManager.load_albums()
+    albums = albumManager.get_albums
+    return jsonify(albums=albums)
+
+
 @app.route('/index', methods=['GET'])
 def index():
+    print(f"route : {request.path}")
+    if not albumManager.is_logged_in:
+        return redirect(url_for('login'))
     return render_template('index.html', albums=albumManager.get_albums)
-
-
-@app.route('/update_albums', methods=['POST'])
-def update_albums() -> dict:
-    try:
-        albumManager.load_albums()
-        return redirect(url_for('index'))
-    except Exception as e:
-        print(f"Failed to load albums due to {e}")
-        return
 
 
 # --------------------------------- Helpers ---------------------------------

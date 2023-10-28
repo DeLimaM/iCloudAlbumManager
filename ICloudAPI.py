@@ -48,7 +48,4 @@ class ICloudApi:
         for album in self._api.photos.albums:
             self._albums[album] = PhotoAlbum(album, len(self._api.photos.albums[album]))
 
-    def log_out(self):
-        self._api.session.delete_cookies()
-
 

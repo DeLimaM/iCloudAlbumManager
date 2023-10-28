@@ -17,7 +17,7 @@ class ICloudAlbumManager:
         return self._api is not None
 
     @property
-    def get_albums(self):
+    def get_albums(self) -> dict:
         result = {}
         for album in self._api.get_albums:
             result[album] = self._api.get_albums[album].to_dict()
@@ -36,7 +36,4 @@ class ICloudAlbumManager:
 
     def load_albums(self):
         self._api.load_albums()
-
-    def log_out(self):
-        self._api.log_out()
 
