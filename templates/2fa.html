@@ -2,13 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>2FA</title>
+    <title>2FA required</title>
     <link rel="stylesheet" href="../static/css/login.css">
 </head>
 <body class="dark-theme">
     <form action="/2fa" method="post">
-        <input type="text" name="code" placeholder="Code">
-        <input type="submit" value="Submit">
+        <h1>Two-Factor authentication</h1>
+        <p>
+            Enter the code you received on your trusted device
+        </p>
+        <label>
+            <input type="text" name="code" placeholder="enter your code here" autofocus>
+        </label>
+        <button type="submit">Validate</button>
     </form>
 </body>
 </html>

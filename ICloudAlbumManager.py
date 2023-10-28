@@ -13,8 +13,15 @@ class ICloudAlbumManager:
         return self._api.is_trusted_session
 
     @property
+    def is_logged_in(self):
+        return self._api is not None
+
+    @property
     def get_albums(self):
-        return self._api.get_albums
+        result = {}
+        for album in self._api.get_albums:
+            result[album] = self._api.get_albums[album].to_dict()
+        return result
 
     # ----------- Methods -----------
     def trust_session(self):
@@ -26,4 +33,10 @@ class ICloudAlbumManager:
     def login(self, username, password):
         self._api = ICloudAPI.ICloudApi(username, password)
         return self._api.require_2fa
+
+    def load_albums(self):
+        self._api.load_albums()
+
+    def log_out(self):
+        self._api.log_out()
 

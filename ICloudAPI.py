@@ -1,6 +1,14 @@
 from pyicloud import PyiCloudService
 from PhotoAlbum import PhotoAlbum
 
+# temp
+import dotenv
+import os
+
+dotenv.load_dotenv('login.env')
+stored_username = os.getenv('ID')
+stored_password = os.getenv('PASSWORD')
+
 
 class ICloudApi:
     _instance = None
@@ -9,9 +17,11 @@ class ICloudApi:
     def __new__(cls, username, password, cookie_directory='cookies'):
         if cls._instance is None:
             cls._instance = super(ICloudApi, cls).__new__(cls)
-            cls._instance._api = PyiCloudService(username, password, cookie_directory=cookie_directory)
+            # using stored username and password for now
+            cls._instance._api = PyiCloudService(stored_username,
+                                                 stored_password,
+                                                 cookie_directory=cookie_directory)
             cls._instance._albums = {}
-            cls._instance._load_albums()
         return cls._instance
 
     # ----------- Properties -----------
@@ -34,8 +44,11 @@ class ICloudApi:
     def validate_2fa_code(self, code):
         return self._api.validate_2fa_code(code)
 
-    def _load_albums(self):
+    def load_albums(self):
         for album in self._api.photos.albums:
             self._albums[album] = PhotoAlbum(album, len(self._api.photos.albums[album]))
+
+    def log_out(self):
+        self._api.session.delete_cookies()
 
 

@@ -15,3 +15,7 @@ class PhotoAlbum:
     @property
     def get_photos_number(self):
         return self._photos_number
+
+    # ----------- Methods -----------
+    def to_dict(self):
+        return {'name': self._name, 'photos': self._photos_number}

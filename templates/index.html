@@ -4,23 +4,32 @@
     <meta charset="UTF-8">
     <title>Index</title>
     <link rel="stylesheet" href="../static/css/index.css">
+    <script type="text/javascript" src="../static/js/index.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body class="dark-theme">
-    <div id="toolbar">
+    <div id = "loading">
+        <div id="loading-content">
+            <div id="loading-text">Chargement...</div>
+        </div>
     </div>
-    <div id="content">
-        <table>
-            <tr>
-                <th>Album</th>
-                <th>Nombre de photos</th>
-            </tr>
-            {% for album in albums %}
-            <tr>
-                <td>{{ album }}</td>
-                <td>{{ albums[album]|length }}</td>
-            </tr>
-            {% endfor %}
-        </table>
+    <div id ="loaded">
+        <div id="toolbar">
+        </div>
+        <div id="content">
+            <table>
+                <tr>
+                    <th>Album</th>
+                    <th>Nombre de photos</th>
+                </tr>
+                {% for album in albums %}
+                    <tr>
+                        <td>{{ album }}</td>
+                        <td>{{ albums[album]|length }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
     </div>
 </body>
 </html>

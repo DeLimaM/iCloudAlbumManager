@@ -23,20 +23,96 @@
 }
 /* #endregion */
 
+/* #region general */
 body {
     color: var(--color-font);
     background: var(--color-secondary);
     padding: 0;
     margin: 0;
+    height: 100vh;
+    overflow: hidden;
     display: flex;
-    align-content: center;
+    align-items: center;
+    text-align: center;
     justify-content: center;
     font-family: "Lexend Exa", sans-serif;
 }
 
+p {
+    font-size: 1rem;
+    margin: 2rem 1rem;
+}
+
+h1 {
+    font-size: 1.5rem;
+    border: var(--color-accent) solid 0.1rem;
+    border-radius: 1rem;
+    box-shadow: var(--color-accent) 0 0 1rem;
+    padding: 0.5rem;
+}
+/* #endregion */
+
+/* #region form */
 form {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 100px 0;
+    border: var(--color-accent) solid 0.2rem;
+    background: var(--color-primary);
+    border-radius: 1rem;
+    margin-top: -10vh;
+    padding: 2rem;
+    height: 50vh;
+    width: 30vw;
+    box-shadow: var(--color-primary) 0 0 3rem;
 }
+/* #endregion */
+
+/* #region form elements */
+form label {
+    padding-bottom: 1rem;
+}
+
+form label input,
+form button {
+    height: 5vh;
+    width: 15vw;
+    border-radius: 5rem;
+    text-align: center;
+    border: transparent solid 0.1rem;
+    outline: none;
+    box-sizing: border-box;
+    transition: 0.2s;
+}
+
+form label input {
+    background: var(--color-secondary);
+    color: var(--color-font);
+}
+
+form label input::placeholder {
+    color: var(--color-font);
+    opacity: 0.5;
+}
+
+form label input:active,
+form label input:focus {
+    outline: none;
+    border: var(--color-accent) solid 0.1rem;
+}
+
+form button {
+    background: var(--color-accent);
+    color: var(--color-primary);
+    font-weight: bold;
+    font-size: 1rem;
+    transition: 0.2s;
+}
+
+form button:hover {
+    cursor: pointer;
+    background: var(--color-tertiary);
+    color: var(--color-font);
+}
+/* #endregion */
