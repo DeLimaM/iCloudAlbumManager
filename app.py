@@ -10,12 +10,18 @@ albumManager = ICloudAlbumManager()
 
 @app.route('/')
 def root():
+    """
+    Redirect to login page
+    """
     print(f"route : {request.path}")
     return redirect(url_for('login'))
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    """
+    Login to iCloud
+    """
     print(f"route : {request.path}")
     if request.method == 'POST':
         username = request.form['username']
@@ -38,6 +44,9 @@ def login():
 
 @app.route('/2fa', methods=['GET', 'POST'])
 def two_factor():
+    """
+    Two-factor authentication
+    """
     print(f"route : {request.path}")
     if request.method == 'POST':
         code = request.form['code']
@@ -59,6 +68,9 @@ def two_factor():
 
 @app.route('/load_albums', methods=['GET'])
 def load_albums():
+    """
+    Load the albums from the iCloud API
+    """
     print(f"route : {request.path}")
     if not albumManager.is_logged_in:
         return jsonify({'error': 'Not logged in'})
@@ -69,15 +81,54 @@ def load_albums():
 
 @app.route('/index', methods=['GET'])
 def index():
+    """
+    Index page
+    """
     print(f"route : {request.path}")
     if not albumManager.is_logged_in:
         return redirect(url_for('login'))
     return render_template('index.html', albums=albumManager.get_albums)
 
 
+@app.route('/download_album', methods=['POST', 'GET'])
+def download_album():
+    """
+    Download an album
+    """
+    print(f"route : {request.path}")
+    if not albumManager.is_logged_in:
+        return jsonify({'error': 'Not logged in'})
+    album_name = request.get_json()['album_name']
+    if album_name is None:
+        return jsonify({'error': 'No album name provided'})
+    if album_name not in albumManager.get_albums:
+        return jsonify({'error': 'Album does not exist'})
+    albumManager.download_album(album_name)
+    return jsonify({'success': True})
+
+
+@app.route('/delete_album', methods=['POST', 'GET'])
+def delete_album():
+    """
+    Delete an album
+    """
+    print(f"route : {request.path}")
+    if not albumManager.is_logged_in:
+        return jsonify({'error': 'Not logged in'})
+    album_name = request.get_json()['album_name']
+    if album_name is None:
+        return jsonify({'error': 'No album name provided'})
+    if album_name not in albumManager.get_albums:
+        return jsonify({'error': 'Album does not exist'})
+    albumManager.delete_album(album_name)
+    return jsonify({'success': True})
+
 # --------------------------------- Helpers ---------------------------------
 
 def check_trust():
+    """
+    Check if the session is trusted, and trust it if not
+    """
     if not albumManager.is_trusted_session:
         print("Trusting session...")
         albumManager.trust_session()

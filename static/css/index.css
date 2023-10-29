@@ -32,6 +32,7 @@ body {
     align-items: center;
     justify-content: center;
     font-family: "Lexend Exa", sans-serif;
+    user-select: none;
 }
 
 /* #region loading */
@@ -80,8 +81,13 @@ body {
     background: var(--color-secondary);
 }
 
+/* #region toolbar */
 #toolbar {
     position: sticky;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     box-sizing: border-box;
     top: 0;
     height: 100vh;
@@ -91,8 +97,40 @@ body {
     background: var(--color-primary);
     margin: 0;
     padding: 0;
+    z-index: 1;
 }
 
+.toolbar-button {
+    height: 5%;
+    width: 90%;
+    margin: 1vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: 1rem;
+    border: none;
+    background: var(--color-accent);
+    color: var(--color-primary);
+    transition: 0.2s;
+}
+
+.toolbar-button:hover {
+    background: var(--color-tertiary);
+    color: var(--color-accent);
+    cursor: pointer;
+}
+
+.toolbar-button:disabled {
+    background: var(--color-tertiary);
+    color: var(--color-accent);
+    cursor: default;
+}
+/* #endregion */
+
+/* #region content */
 #content {
     flex: 4;
     background: var(--color-secondary);
@@ -108,16 +146,35 @@ table {
 
 tr {
     height: 5vh;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out,
+                color 0.2s ease;
 }
 
 th, td {
     text-align: center;
-    padding: 0.5rem;
+}
+
+td {
+    padding: 0.5vw 0;
+    transition: 0.2s;
     border-bottom: 0.1rem solid var(--color-tertiary);
 }
 
 th {
     color: var(--color-accent);
+    background: var(--color-secondary);
+    border-bottom: 0.1rem solid var(--color-accent);
+    padding: 1.5vw 0;
+    font-weight: bold;
+    font-size: 1.2rem;
+    cursor: default;
 }
+
+.selected {
+    background: var(--color-tertiary);
+    color: var(--color-accent);
+}
+/* #endregion */
 /* #endregion */
 /* #endregion */

@@ -48,4 +48,7 @@ class ICloudApi:
         for album in self._api.photos.albums:
             self._albums[album] = PhotoAlbum(album, len(self._api.photos.albums[album]))
 
+    def get_photos(self, album_name):
+        return self._api.photos.albums[album_name].photos
+
 

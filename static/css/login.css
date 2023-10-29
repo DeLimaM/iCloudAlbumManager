@@ -36,6 +36,7 @@ body {
     text-align: center;
     justify-content: center;
     font-family: "Lexend Exa", sans-serif;
+    user-select: none;
 }
 
 p {
@@ -82,11 +83,14 @@ form label {
 }
 
 form label input,
-form button {
+form #submit {
     height: 5vh;
     width: 15vw;
-    border-radius: 5rem;
+    display: flex;
     text-align: center;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5rem;
     border: transparent solid 0.1rem;
     outline: none;
     box-sizing: border-box;
@@ -112,19 +116,20 @@ form label input:focus {
     border: var(--color-accent) solid 0.1rem;
 }
 
-form button {
+form #submit {
     background: var(--color-accent);
     color: var(--color-primary);
     text-transform: uppercase;
+    font-family: "Lexend Exa", sans-serif;
     font-weight: bold;
     font-size: 1.3rem;
     transition: 0.2s;
 }
 
-form button:hover {
+form #submit:hover {
     cursor: pointer;
     background: var(--color-tertiary);
-    color: var(--color-font);
+    color: var(--color-accent);
 }
 
 #code {
