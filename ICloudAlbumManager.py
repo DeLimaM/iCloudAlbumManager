@@ -2,6 +2,8 @@ import os
 import shutil
 from threading import Thread
 
+from flask import jsonify
+
 import ICloudAPI
 
 
@@ -15,6 +17,8 @@ class ICloudAlbumManager:
         self._api = None
         self._download_threads = {}
         self._cancel_flags = {}
+        self._pause_flags = {}
+        self._albums_path = os.path.join(os.getcwd(), 'photos')
 
     # ----------- Properties -----------
     @property
@@ -43,6 +47,14 @@ class ICloudAlbumManager:
         for album in self._api.get_albums:
             result[album] = self._api.get_albums[album].to_dict()
         return result
+
+    @property
+    def get_albums_path(self) -> str:
+        """
+        Get the path to the albums
+        :return: path to the albums
+        """
+        return self._albums_path
 
     # ----------- Methods -----------
     def trust_session(self):
@@ -103,9 +115,12 @@ class ICloudAlbumManager:
             print(f"Album {album_name} is already being downloaded!")
             return
         self._cancel_flags[album_name] = False
-        path = os.path.join(os.getcwd(), album_name)
+        self._pause_flags[album_name] = False
+        path = os.path.join(self._albums_path, album_name)
+        # use of threading is useless for now, but will be useful when implementing multiple downloads
         self._download_threads[album_name] = Thread(target=self._download_album, args=(album_name, path))
         self._download_threads[album_name].start()
+        self._download_threads[album_name].join()
         print(f"Downloading album {album_name}...")
 
     def _download_album(self, album_name: str, path: str) -> None:
@@ -115,14 +130,18 @@ class ICloudAlbumManager:
         :param path: path to download the album to
         """
         if not os.path.exists(path):
-            os.mkdir(album_name)
+            os.mkdir(path)
         for photo in self._api.get_photos(album_name):
             if self._cancel_flags[album_name]:
                 print(f"Album {album_name} download canceled!")
                 self._cleanup_download(album_name)
                 return
-
-            self._download_photo(photo, os.path.join(album_name, os.path.join(path, photo.filename)))
+            if self._pause_flags[album_name]:
+                print(f"Album {album_name} download paused!")
+                while self._pause_flags[album_name]:
+                    pass
+                print(f"Album {album_name} download resumed!")
+            self._download_photo(photo, os.path.join(path, photo.filename))
         print(f"Album {album_name} download completed!")
         self._cleanup_download(album_name)
 
@@ -143,6 +162,8 @@ class ICloudAlbumManager:
             del self._download_threads[album_name]
         if album_name in self._cancel_flags:
             del self._cancel_flags[album_name]
+        if album_name in self._pause_flags:
+            del self._pause_flags[album_name]
 
     def delete_album(self, album_name: str) -> None:
         """
@@ -152,7 +173,18 @@ class ICloudAlbumManager:
         if not self._api.get_albums[album_name].is_on_disk:
             print(f"Album {album_name} is not on disk!")
             return
-        path = os.path.join(os.getcwd(), album_name)
+        path = os.path.join(self._albums_path, album_name)
         shutil.rmtree(path)
         print(f"Album {album_name} deleted!")
+
+    def pause_download(self, album_name: str) -> None:
+        """
+        Pause an album download
+        :param album_name: name of the album to pause
+        """
+        if album_name not in self._download_threads:
+            print(f"Album {album_name} is not being downloaded!")
+            return
+        self._pause_flags[album_name] = True
+        print(f"Album {album_name} paused!")
 

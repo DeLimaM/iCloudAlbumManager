@@ -1,3 +1,5 @@
+import time
+
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 from ICloudAlbumManager import ICloudAlbumManager
 
@@ -90,15 +92,15 @@ def index():
     return render_template('index.html', albums=albumManager.get_albums)
 
 
-@app.route('/download_album', methods=['POST', 'GET'])
-def download_album():
+@app.route('/download_album/<album_name>', methods=['POST', 'GET'])
+def download_album(album_name):
     """
     Download an album
+    ::param album_name: name of the album to download
     """
     print(f"route : {request.path}")
     if not albumManager.is_logged_in:
         return jsonify({'error': 'Not logged in'})
-    album_name = request.get_json()['album_name']
     if album_name is None:
         return jsonify({'error': 'No album name provided'})
     if album_name not in albumManager.get_albums:
@@ -107,15 +109,15 @@ def download_album():
     return jsonify({'success': True})
 
 
-@app.route('/delete_album', methods=['POST', 'GET'])
-def delete_album():
+@app.route('/delete_album/<album_name>', methods=['POST', 'GET'])
+def delete_album(album_name):
     """
     Delete an album
+    ::param album_name: name of the album to delete
     """
     print(f"route : {request.path}")
     if not albumManager.is_logged_in:
         return jsonify({'error': 'Not logged in'})
-    album_name = request.get_json()['album_name']
     if album_name is None:
         return jsonify({'error': 'No album name provided'})
     if album_name not in albumManager.get_albums:
@@ -123,8 +125,25 @@ def delete_album():
     albumManager.delete_album(album_name)
     return jsonify({'success': True})
 
-# --------------------------------- Helpers ---------------------------------
 
+@app.route('/pause_download/<album_name>', methods=['POST', 'GET'])
+def pause_download(album_name):
+    """
+    Pause downloading an album
+    ::param album_name: name of the album to pause
+    """
+    print(f"route : {request.path}")
+    if not albumManager.is_logged_in:
+        return jsonify({'error': 'Not logged in'})
+    if album_name is None:
+        return jsonify({'error': 'No album name provided'})
+    if album_name not in albumManager.get_albums:
+        return jsonify({'error': 'Album does not exist'})
+    albumManager.pause_download(album_name)
+    return jsonify({'success': True})
+
+
+# --------------------------------- Helpers ---------------------------------
 def check_trust():
     """
     Check if the session is trusted, and trust it if not
@@ -135,6 +154,5 @@ def check_trust():
 
 
 # --------------------------------- Main ---------------------------------
-
 if __name__ == '__main__':
     app.run(debug=True)

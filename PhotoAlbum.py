@@ -22,7 +22,7 @@ class PhotoAlbum:
 
     @property
     def is_on_disk(self):
-        return os.path.exists(os.path.join(os.getcwd(), self._name))
+        return os.path.exists(os.path.join(os.getcwd(), 'photos', self._name))
 
     # ----------- Methods -----------
     def to_dict(self):

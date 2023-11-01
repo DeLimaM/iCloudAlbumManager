@@ -108,12 +108,14 @@ body {
     align-items: center;
     justify-content: center;
     text-align: center;
+    font-family: "Lexend Exa", sans-serif;
     font-size: 1.2rem;
     font-weight: bold;
     border-radius: 1rem;
     border: none;
     background: var(--color-accent);
     color: var(--color-primary);
+    outline: none;
     transition: 0.2s;
 }
 
@@ -123,10 +125,11 @@ body {
     cursor: pointer;
 }
 
-.toolbar-button:disabled {
-    background: var(--color-tertiary);
-    color: var(--color-accent);
+.toolbar-button.disabled {
+    background: var(--color-secondary);
+    color: var(--color-primary);
     cursor: default;
+    pointer-events: none;
 }
 /* #endregion */
 
@@ -140,8 +143,12 @@ body {
 
 /* #region table */
 table {
-    border-collapse: collapse;
     width: 100%;
+    border-collapse: separate;
+}
+
+table * {
+    box-sizing: border-box;
 }
 
 tr {
@@ -149,6 +156,11 @@ tr {
     cursor: pointer;
     transition: background-color 0.2s ease-in-out,
                 color 0.2s ease;
+}
+
+tr:first-of-type {
+    height: 10vh;
+    color: var(--color-accent);
 }
 
 th, td {
@@ -159,16 +171,6 @@ td {
     padding: 0.5vw 0;
     transition: 0.2s;
     border-bottom: 0.1rem solid var(--color-tertiary);
-}
-
-th {
-    color: var(--color-accent);
-    background: var(--color-secondary);
-    border-bottom: 0.1rem solid var(--color-accent);
-    padding: 1.5vw 0;
-    font-weight: bold;
-    font-size: 1.2rem;
-    cursor: default;
 }
 
 .selected {
