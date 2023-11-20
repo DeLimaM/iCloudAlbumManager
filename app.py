@@ -105,6 +105,8 @@ def download_album(album_name):
         return jsonify({'error': 'No album name provided'})
     if album_name not in albumManager.get_albums:
         return jsonify({'error': 'Album does not exist'})
+    if albumManager.get_albums[album_name]['photo_count'] == 0:
+        return jsonify({'error': 'Album is empty'})
     albumManager.download_album(album_name)
     return jsonify({'success': True})
 
@@ -156,3 +158,4 @@ def check_trust():
 # --------------------------------- Main ---------------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+

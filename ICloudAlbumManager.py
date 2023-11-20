@@ -19,6 +19,7 @@ class ICloudAlbumManager:
         self._cancel_flags = {}
         self._pause_flags = {}
         self._albums_path = os.path.join(os.getcwd(), 'photos')
+        self.create_photos_directory()
 
     # ----------- Properties -----------
     @property
@@ -57,6 +58,13 @@ class ICloudAlbumManager:
         return self._albums_path
 
     # ----------- Methods -----------
+    def create_photos_directory(self) -> None:
+        """
+        Create the photos directory
+        """
+        if not os.path.exists(self._albums_path):
+            os.mkdir(self._albums_path)
+
     def trust_session(self):
         """
         Trust the current session

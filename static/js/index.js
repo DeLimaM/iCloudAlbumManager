@@ -1,9 +1,16 @@
 document.addEventListener("DOMContentLoaded", loadAlbums);
-document.addEventListener("DOMContentLoaded", initEventListeners);
 
 setTimeout(startUpdatingAlbums, 120000); // update every 2 minutes
 
 // globals
+
+// load the icon's code from their files
+let ondiskIcon = loadIcon("/static/icons/ondisk.svg");
+let notondiskIcon = loadIcon("/static/icons/notondisk.svg");
+
+let pauseIcon = loadIcon("/static/icons/pause.svg");
+let downloadIcon = loadIcon("/static/icons/download.svg");
+let deleteIcon = loadIcon("/static/icons/delete.svg");
 
 // TODO: refactor repetitive code into functions (downloadAlbum, deleteAlbum)
 
@@ -22,24 +29,7 @@ function hideLoading() {
 // load the albums from the server
 function loadAlbums() {
     showLoading();
-
-    let xhr = new XMLHttpRequest();
-    xhr.open("GET", "/load_albums", true);
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
-                let data = JSON.parse(xhr.responseText);
-                if (data.error) {
-                    alert(data.error)
-                    return
-                } else {
-                    populateTable(data.albums);
-                }
-            }
-            hideLoading();
-        }
-    };
-    xhr.send();
+    updateAlbums(true);
 }
 
 // populate the table with the albums
@@ -57,7 +47,11 @@ function populateTable(data) {
             const countCell = document.createElement("td");
             countCell.textContent = data[album]["photo_count"];
             const downloadedCell = document.createElement("td");
-            downloadedCell.textContent = data[album]["on_disk"];
+            if (data[album]["downloaded"]) {
+                downloadedCell.innerHTML = ondiskIcon;
+            } else {
+                downloadedCell.innerHTML = notondiskIcon;
+            }
 
             row.appendChild(nameCell);
             row.appendChild(countCell);
@@ -98,6 +92,12 @@ function selectRow(row) {
         }
         row.classList.toggle("selected");
     }
+
+    let downloadButton = getDownloadButton();
+    let deleteButton = getDeleteButton();
+
+    downloadButton.innerHTML = downloadIcon;
+    deleteButton.innerHTML = deleteIcon;
 }
 
 // download the selected album
@@ -122,10 +122,7 @@ function downloadAlbum() {
                 if (data.error) {
                     alert(data.error)
                 } else if (data.success === true) {
-                    downloadButton.textContent = "Download";
                     updateAlbums();
-                } else {
-                    console.log("Unknown error");
                 }
             }
         }
@@ -141,12 +138,6 @@ function deleteAlbum() {
     xhr.open("POST", `/delete_album/${albumName}`, true);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.send();
-    
-    // disable the delete button
-    let deleteButton = getDeleteButton();
-    deleteButton.textContent = "Deleting...";
-    deleteButton.disabled = true;
-    deleteButton.classList.add("disabled");
 
     // check if the deletion is complete
     xhr.onreadystatechange = function () {
@@ -155,29 +146,17 @@ function deleteAlbum() {
                 let data = JSON.parse(xhr.responseText);
                 if (data.error) {
                     alert(data.error)
+
                 } else if (data.success === true) {
-                    deleteButton.textContent = "Delete";
-                    deleteButton.disabled = false;
-                    deleteButton.classList.remove("disabled");
                     updateAlbums();
-                } else {
-                    console.log("Unknown error");
                 }
             }
         }
     };
 }
 
-// initialize the event listeners
-function initEventListeners() {
-    toDownload();
-    let deleteButton = getDeleteButton();
-    deleteButton.onclick = deleteAlbum;
-}
-
 // update the albums
-function updateAlbums() {
-    console.log("Updating albums");
+function updateAlbums(hideLoadingOnSuccess=false) {
     let xhr = new XMLHttpRequest();
     xhr.open("GET", "/load_albums", true);
     xhr.onreadystatechange = function () {
@@ -189,6 +168,9 @@ function updateAlbums() {
                 } else {
                     populateTable(data.albums);
                 }
+            }
+            if(hideLoadingOnSuccess){
+                hideLoading();
             }
         }
     };
@@ -213,34 +195,10 @@ function pauseDownload() {
                     alert(data.error)
                 } else if (data.success === true) {
                     updateAlbums();
-                } else {
-                    console.log("Unknown error");
                 }
             }
         }
     };
-}
-
-// transform the download button into a pause button
-function toPause() {
-    let downloadButton = getDownloadButton();
-    downloadButton.textContent = "Pause";
-
-    downloadButton.onclick = function() {
-        pauseDownload();
-        toDownload();
-    }
-}
-
-// display the download button
-function toDownload() {
-    let downloadButton = getDownloadButton();
-    downloadButton.textContent = "Download";
-
-    downloadButton.onclick = function() {
-        downloadAlbum();
-        toPause();
-    }
 }
 
 // get the name of the selected album
@@ -261,4 +219,16 @@ function getDownloadButton() {
 // get the delete button
 function getDeleteButton() {
     return document.getElementById("delete-button");
+}
+
+// load the icon's code from their files
+function loadIcon(path){
+    let xhr = new XMLHttpRequest();
+    xhr.open("GET", path, false);
+    xhr.send();
+    if (xhr.status === 200) {
+        return xhr.responseText;
+    } else {
+        return "[icon not found]";
+    }
 }
